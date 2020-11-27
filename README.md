@@ -2,14 +2,14 @@
 
 A Simple To Do List app
 
-Simple Features:
+###### Simple Features:
 
-[ ] Add a ToDo
+- [ ] Add a ToDo
 
-[ ] Delete a ToDo
+- [ ] Delete a ToDo
 
-[ ] Edit a ToDo
+- [ ] Edit a ToDo
 
-[ ] Mark a ToDo as complete
+- [ ] Mark a ToDo as complete
 
-[ ] Prioritize ToDos (move them up or down)
+- [ ] Prioritize ToDos (move them up or down)
