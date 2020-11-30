@@ -9,7 +9,7 @@ class TodoListScreen extends StatefulWidget {
 }
 
 class _TodoListScreenState extends State<TodoListScreen> {
-  List<Todo> todos = [];
+  List todos = [];
 
   _toggleTodo(Todo todo, bool isChecked) {
     setState(() {

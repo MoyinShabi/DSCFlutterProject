@@ -26,10 +26,51 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-//Always put your variables inside a class
-  List items = ["Item 1", "Item 2", "Item 3"];
-  //Not useful you see
-  // bool toggle = false;
+  List todos = [];
+  final textController = TextEditingController();
+
+  /// Function to display a Dialog when the FAB is pressed
+  displayDialog() {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('New Todo'),
+          content: TextField(
+            controller: textController,
+            autofocus: true,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          actions: [
+            TextButton(
+                child: Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  textController.clear();
+                }),
+            TextButton(
+              child: Text('Add'),
+              onPressed: () {
+                final todo = textController.value.text;
+
+                if (todo != null) {
+                  setState(() {
+                    todos.add(todo);
+                  });
+                }
+                textController.clear();
+                Navigator.of(context).pop(todo);
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,46 +79,25 @@ class _MainPageState extends State<MainPage> {
       ),
       body: ReorderableListView(
         children: [
-          for (final item in items)
+          for (final item in todos)
             TodoTile(
               todoText: item,
               key: UniqueKey(),
             ),
-          // CheckboxListTile(
-          //   value: toggle,
-          //   onChanged: (bool) {
-          //     setState(() {
-          //       if (!bool) {
-          //         toggle = false;
-          //       } else {
-          //         toggle = true;
-          //       }
-          //     });
-          //   },
-          //   key: ValueKey(item),
-          //   title: ToDoTile(
-          //     todoText: item,
-          //   ),
-          // ),
         ],
-        //The reordering works perfectly...You just need to hold the tile down before moving
         onReorder: (oldIndex, newIndex) {
           setState(() {
             if (oldIndex < newIndex) {
               newIndex -= 1;
             }
-            var getReplacedWidget = items.removeAt(oldIndex);
-            items.insert(newIndex, getReplacedWidget);
+            var getReplacedWidget = todos.removeAt(oldIndex);
+            todos.insert(newIndex, getReplacedWidget);
           });
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print("Moyin will be fine");
-          //Put a function to show a dialog widget here
-          //Hint
-          // showDialog();
-          // set the showDialog function to a variable to receive user input
+          displayDialog();
         },
         tooltip: 'New ToDo',
         child: Icon(Icons.add),
@@ -100,32 +120,10 @@ class TodoTile extends StatefulWidget {
 
 class _TodoTileState extends State<TodoTile> {
   bool checked = false;
-  //REDUNDANT CODE
-  // Widget checkWidget() {
-  //   if (
-  //       // This below is redundant
-  //       // checked == false
-  //       //Do it like this
-  //       !checked) {
-  //     return Text(
-  //       widget.todoText,
-  //       style: TextStyle(
-  //
-  //           ),
-  //     );
-  //   } else {
-  //     return Text(
-  //       widget.todoText,
-  //       style: TextStyle(
-  //         decoration: TextDecoration.lineThrough,
-  //
-  //       ),
-  //     );
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
+    //TODO Change the `Card` below to a `CheckBoxListTile` widget & see if it'll work also
     return Card(
       margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
       shape: RoundedRectangleBorder(
