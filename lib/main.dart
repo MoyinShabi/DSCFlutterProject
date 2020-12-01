@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gradient_text/gradient_text.dart';
 
 void main() {
   SystemChrome.setEnabledSystemUIOverlays([]);
@@ -75,32 +76,49 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TODOs'),
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        title: GradientText(
+          'TODOs',
+          style: TextStyle(
+            fontFamily: 'SFPro',
+            fontSize: 40.0,
+            color: Colors.black,
+          ),
+          gradient: LinearGradient(
+            colors: [Colors.red, Colors.blue],
+          ),
+        ),
       ),
-      body: ReorderableListView(
-        children: [
-          for (final item in todos)
-            TodoTile(
-              todoText: item,
-              key: UniqueKey(),
-            ),
-        ],
-        onReorder: (oldIndex, newIndex) {
-          setState(() {
-            if (oldIndex < newIndex) {
-              newIndex -= 1;
-            }
-            var getReplacedWidget = todos.removeAt(oldIndex);
-            todos.insert(newIndex, getReplacedWidget);
-          });
+      body: ListView.separated(
+        itemCount: todos.length,
+        itemBuilder: (BuildContext context, index) {
+          return TodoTile(
+            todoText: todos.toString(),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return Divider();
         },
       ),
       floatingActionButton: FloatingActionButton(
+        child: Container(
+          height: 60.0,
+          width: 60.0,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [Colors.blue, Colors.red],
+              )),
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+        ),
         onPressed: () {
           displayDialog();
         },
-        tooltip: 'New ToDo',
-        child: Icon(Icons.add),
+        tooltip: 'Add',
       ),
     );
   }
@@ -123,33 +141,22 @@ class _TodoTileState extends State<TodoTile> {
 
   @override
   Widget build(BuildContext context) {
-    //TODO Change the `Card` below to a `CheckBoxListTile` widget & see if it'll work also
     return Card(
-      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              widget.todoText ?? "",
-              style: TextStyle(
-                color: Colors.black,
-                decoration: checked ? TextDecoration.lineThrough : null,
-              ),
-            ),
-            Checkbox(
-                value: checked,
-                onChanged: (value) {
-                  setState(() {
-                    checked = value;
-                  });
-                })
-          ],
+      child: ListTile(
+        title: Text(
+          widget.todoText ?? "",
+          style: TextStyle(
+            color: Colors.black,
+            decoration: checked ? TextDecoration.lineThrough : null,
+          ),
         ),
+        trailing: Checkbox(
+            value: checked,
+            onChanged: (value) {
+              setState(() {
+                checked = value;
+              });
+            }),
       ),
     );
   }
