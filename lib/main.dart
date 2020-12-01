@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() {
-  SystemChrome.setEnabledSystemUIOverlays([]);
+  // SystemChrome.setEnabledSystemUIOverlays([]);
   runApp(MyApp());
 }
 
@@ -77,24 +76,38 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(
         title: Text('TODOs'),
       ),
-      body: ReorderableListView(
-        children: [
-          for (final item in todos)
-            TodoTile(
-              todoText: item,
-              key: UniqueKey(),
+      body: todos.isEmpty
+          ? Center(
+              child: Container(
+                child: Text("Click the + button to add a todo"),
+              ),
+            )
+          : ReorderableListView(
+              children: [
+                for (final item in todos)
+                  TodoTile(
+                    todoText: item,
+                    key: UniqueKey(),
+                    onChanged: (bool) async {
+                      if (bool) {
+                        await Future.delayed(Duration(seconds: 2));
+                        setState(() {
+                          todos.remove(item);
+                        });
+                      }
+                    },
+                  ),
+              ],
+              onReorder: (oldIndex, newIndex) {
+                setState(() {
+                  if (oldIndex < newIndex) {
+                    newIndex -= 1;
+                  }
+                  var getReplacedWidget = todos.removeAt(oldIndex);
+                  todos.insert(newIndex, getReplacedWidget);
+                });
+              },
             ),
-        ],
-        onReorder: (oldIndex, newIndex) {
-          setState(() {
-            if (oldIndex < newIndex) {
-              newIndex -= 1;
-            }
-            var getReplacedWidget = todos.removeAt(oldIndex);
-            todos.insert(newIndex, getReplacedWidget);
-          });
-        },
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           displayDialog();
@@ -110,10 +123,11 @@ class TodoTile extends StatefulWidget {
   const TodoTile({
     this.key,
     @required this.todoText,
+    @required this.onChanged,
   });
   final Key key;
   final String todoText;
-
+  final Function(bool) onChanged;
   @override
   _TodoTileState createState() => _TodoTileState();
 }
@@ -146,6 +160,7 @@ class _TodoTileState extends State<TodoTile> {
                 onChanged: (value) {
                   setState(() {
                     checked = value;
+                    widget.onChanged(value);
                   });
                 })
           ],
