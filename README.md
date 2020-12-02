@@ -18,7 +18,9 @@ A Simple To Do List app
 
 ### Screenshots:
 
-! [screenshot](screenshots\IMG_8146.JPG)
-! [screenshot](screenshots\IMG_8147.JPG)
-! [screenshot](screenshots\IMG_8148.JPG)
-! [screenshot](screenshots\IMG_8149.JPG)
+! [screenshot](/screenshots/IMG_8149.JPG)
+! [screenshot](/screenshots/IMG_8148.JPG)
+! [screenshot](/screenshots/IMG_8147.JPG)
+! [screenshot](/screenshots/IMG_8146.JPG)
+
+
