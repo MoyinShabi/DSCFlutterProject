@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:gradient_text/gradient_text.dart';
 
 void main() {
-  SystemChrome.setEnabledSystemUIOverlays([]);
+  // SystemChrome.setEnabledSystemUIOverlays([]);
   runApp(MyApp());
 }
 
@@ -78,29 +76,47 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
-        title: GradientText(
+        title: Text(
           'TODOs',
           style: TextStyle(
             fontFamily: 'SFPro',
             fontSize: 40.0,
             color: Colors.black,
           ),
-          gradient: LinearGradient(
-            colors: [Colors.red, Colors.blue],
-          ),
         ),
       ),
-      body: ListView.separated(
-        itemCount: todos.length,
-        itemBuilder: (BuildContext context, index) {
-          return TodoTile(
-            todoText: todos.toString(),
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return Divider();
-        },
-      ),
+      body: todos.isEmpty
+          ? Center(
+              child: Container(
+                child: Text("Click the + button to add a todo"),
+              ),
+            )
+          : ReorderableListView(
+              children: [
+                for (final item in todos)
+                  TodoTile(
+                    todoText: item,
+                    key: UniqueKey(),
+                    onChanged: (bool) async {
+                      if (bool) {
+                        await Future.delayed(Duration(seconds: 2));
+                        setState(() {
+                          todos.remove(item);
+                        });
+                      }
+                    },
+                  ),
+              ],
+              onReorder: (oldIndex, newIndex) {
+                setState(() {
+                  if (oldIndex < newIndex) {
+                    newIndex -= 1;
+                  }
+                  var getReplacedWidget = todos.removeAt(oldIndex);
+                  todos.insert(newIndex, getReplacedWidget);
+                });
+              },
+            ),
       floatingActionButton: FloatingActionButton(
         child: Container(
           height: 60.0,
@@ -128,10 +144,11 @@ class TodoTile extends StatefulWidget {
   const TodoTile({
     this.key,
     @required this.todoText,
+    @required this.onChanged,
   });
   final Key key;
   final String todoText;
-
+  final Function(bool) onChanged;
   @override
   _TodoTileState createState() => _TodoTileState();
 }
@@ -142,21 +159,32 @@ class _TodoTileState extends State<TodoTile> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: ListTile(
-        title: Text(
-          widget.todoText ?? "",
-          style: TextStyle(
-            color: Colors.black,
-            decoration: checked ? TextDecoration.lineThrough : null,
-          ),
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              widget.todoText ?? "",
+              style: TextStyle(
+                color: Colors.black,
+                decoration: checked ? TextDecoration.lineThrough : null,
+              ),
+            ),
+            Checkbox(
+                value: checked,
+                onChanged: (value) {
+                  setState(() {
+                    checked = value;
+                    widget.onChanged(value);
+                  });
+                })
+          ],
         ),
-        trailing: Checkbox(
-            value: checked,
-            onChanged: (value) {
-              setState(() {
-                checked = value;
-              });
-            }),
       ),
     );
   }
