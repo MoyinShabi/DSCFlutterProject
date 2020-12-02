@@ -214,3 +214,17 @@ class _TodoTileState extends State<TodoTile> {
     );
   }
 }
+
+/* TODO: 
+1. Move checkboxes to leading
+2. Learn & use `Hive` to (re)implement the following:
+ -Adding Todos
+ -Deleting Todos
+ -Editing Todos (by pressing ListTile trailing) (in the same AlertDialog)
+ -Retaining Added Todos after app has been closed(storing them locally)
+ -Sorting Todos(PopupMenuButton in AppBar actions):
+  -All(Todos with all checked & unchecked checkboxes); 
+  -Completed(Todos with only checked checkboxes);
+   & Incompleted(Todos with only unchecked checkboxes)
+3. See if all Todos can be made to be reordered
+*/
