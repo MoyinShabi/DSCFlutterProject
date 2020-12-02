@@ -221,10 +221,10 @@ class _TodoTileState extends State<TodoTile> {
  -Adding Todos
  -Deleting Todos
  -Editing Todos (by pressing ListTile trailing) (in the same AlertDialog)
- -Retaining Added Todos after app has been closed(storing them locally)
+ -Data persistence- Retaining added Todos after app has been closed(storing them locally)
  -Sorting Todos(PopupMenuButton in AppBar actions):
   -All(Todos with all checked & unchecked checkboxes); 
   -Completed(Todos with only checked checkboxes);
-   & Incompleted(Todos with only unchecked checkboxes)
+  -Incompleted(Todos with only unchecked checkboxes)
 3. See if all Todos can be made to be reordered
 */

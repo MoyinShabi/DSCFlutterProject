@@ -16,6 +16,8 @@ A Simple To Do List app
 
 - [ ] Prioritize ToDos (move them up or down)
 
+- [ ] Data persistence
+
 ### Screenshots:
 
 
