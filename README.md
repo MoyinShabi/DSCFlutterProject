@@ -6,10 +6,19 @@ A Simple To Do List app
 
 - [x] Add a ToDo
 
-- [ ] Delete a ToDo
+- [x] Delete a ToDo (Swipe left to Delete)
+
+- [x] Undo a Deletion
+
+- [x] Mark a ToDo as completed
 
 - [ ] Edit a ToDo
 
-- [x] Mark a ToDo as complete
+- [ ] Prioritize ToDos (move them up or down)
 
-- [x] Prioritize ToDos (move them up or down)
+### Screenshots:
+
+! [screenshot](screenshots\IMG_8146.JPG)
+! [screenshot](screenshots\IMG_8147.JPG)
+! [screenshot](screenshots\IMG_8148.JPG)
+! [screenshot](screenshots\IMG_8149.JPG)
