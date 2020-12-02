@@ -9,7 +9,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
+	<string>TODOs</string>
 	<key>CFBundleName</key>
 	<string>dsc_flutter_project</string>
 	<key>CFBundlePackageType</key>

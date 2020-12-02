@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gradient_text/gradient_text.dart';
 
 void main() {
-  // SystemChrome.setEnabledSystemUIOverlays([]);
   runApp(MyApp());
 }
 
@@ -9,6 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "Simple ToDos",
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -45,13 +46,19 @@ class _MainPageState extends State<MainPage> {
           ),
           actions: [
             TextButton(
-                child: Text('Cancel'),
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(fontSize: 16.0),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                   textController.clear();
                 }),
             TextButton(
-              child: Text('Add'),
+              child: Text(
+                'Add',
+                style: TextStyle(fontSize: 16.0),
+              ),
               onPressed: () {
                 final todo = textController.value.text;
 
@@ -76,45 +83,76 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
-        title: Text(
+        title: GradientText(
           'TODOs',
           style: TextStyle(
-            fontFamily: 'SFPro',
-            fontSize: 40.0,
+            fontFamily: 'SFProRounded',
+            fontSize: 42.0,
             color: Colors.black,
+          ),
+          gradient: LinearGradient(
+            colors: [Colors.red, Colors.blue],
           ),
         ),
       ),
       body: todos.isEmpty
           ? Center(
               child: Container(
-                child: Text("Click the + button to add a todo"),
+                child: GradientText(
+                  "Click the + button to add a todo",
+                  gradient: LinearGradient(
+                    colors: [Colors.red, Colors.blue],
+                  ),
+                ),
               ),
             )
-          : ReorderableListView(
-              children: [
-                for (final item in todos)
-                  TodoTile(
-                    todoText: item,
-                    key: UniqueKey(),
-                    onChanged: (bool) async {
-                      if (bool) {
-                        await Future.delayed(Duration(seconds: 2));
-                        setState(() {
-                          todos.remove(item);
-                        });
-                      }
-                    },
+          : ListView.separated(
+              itemCount: todos.length,
+              itemBuilder: (BuildContext context, index) {
+                final item = todos[index];
+                return Dismissible(
+                  key: Key(item),
+                  //Specifies the direction of swipe to delete
+                  direction: DismissDirection.endToStart,
+                  // Deletes an item on the list, on swipe
+                  onDismissed: (direction) {
+                    setState(() {
+                      todos.removeAt(index);
+                    });
+                    Scaffold.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "$item Deleted",
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                        action: SnackBarAction(
+                          label: "UNDO",
+                          onPressed: () {
+                            setState(() {
+                              todos.insert(index, item);
+                            });
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                  background: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.only(right: 25.0),
+                    child: Icon(
+                      Icons.delete_outlined,
+                      color: Colors.white,
+                      size: 30.0,
+                    ),
                   ),
-              ],
-              onReorder: (oldIndex, newIndex) {
-                setState(() {
-                  if (oldIndex < newIndex) {
-                    newIndex -= 1;
-                  }
-                  var getReplacedWidget = todos.removeAt(oldIndex);
-                  todos.insert(newIndex, getReplacedWidget);
-                });
+                  child: TodoTile(
+                    todoText: todos[index],
+                  ),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return Divider();
               },
             ),
       floatingActionButton: FloatingActionButton(
@@ -144,11 +182,10 @@ class TodoTile extends StatefulWidget {
   const TodoTile({
     this.key,
     @required this.todoText,
-    @required this.onChanged,
   });
   final Key key;
   final String todoText;
-  final Function(bool) onChanged;
+
   @override
   _TodoTileState createState() => _TodoTileState();
 }
@@ -158,34 +195,22 @@ class _TodoTileState extends State<TodoTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              widget.todoText ?? "",
-              style: TextStyle(
-                color: Colors.black,
-                decoration: checked ? TextDecoration.lineThrough : null,
-              ),
-            ),
-            Checkbox(
-                value: checked,
-                onChanged: (value) {
-                  setState(() {
-                    checked = value;
-                    widget.onChanged(value);
-                  });
-                })
-          ],
+    return ListTile(
+      title: Text(
+        widget.todoText ?? "",
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 17.0,
+          decoration: checked ? TextDecoration.lineThrough : null,
         ),
       ),
+      trailing: Checkbox(
+          value: checked,
+          onChanged: (value) {
+            setState(() {
+              checked = value;
+            });
+          }),
     );
   }
 }

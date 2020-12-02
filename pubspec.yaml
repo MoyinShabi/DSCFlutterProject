@@ -36,7 +36,7 @@ dev_dependencies:
 flutter:
 
   fonts:
-    - family: SFPro
+    - family: SFProRounded
       fonts:
         - asset: fonts/SFProRounded-Bold.ttf
 
